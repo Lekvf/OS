@@ -12,7 +12,7 @@ int main()
 
     (void) time( &now );
     //putenv("TZ=UTC");
-    printf("%s", ctime( &now ) );
+    //printf("%s", ctime( &now ) );
     putenv("TZ=PST8PDT");
     printf("%s", ctime( &now ) );
     sp = localtime(&now);
