@@ -11,12 +11,12 @@ int main()
     struct tm *sp;
 
     if (time(&now) == -1){
-	    perror("Error");
+	    perror("time error");
 	    exit(1);
     }
 
     if (setenv("TZ", "PST8PDT", 1) != 0){
-	    perror("Error");
+	    perror("setenv error");
 	    exit(1);
     }
 
