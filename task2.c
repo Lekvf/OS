@@ -14,11 +14,7 @@ int main()
 	    perror("Error");
 	    exit(1);
     }
-    
-    /*if (putenv("TZ=PST8PDT") == -1){
-	    perror("Error");
-	    exit(1);
-    }*/
+
     if (setenv("TZ", "PST8PDT", 1) != 0){
 	    perror("Error");
 	    exit(1);
