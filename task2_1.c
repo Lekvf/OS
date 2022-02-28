@@ -3,8 +3,11 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define TIME_ERROR -1
-#define SETENV_MEMORY_ALLOCATE_ERROR -1
+#define ERROR -1
+#define TIME_ERROR 1
+#define SETENV_MEMORY_ALLOCATE_ERROR 2
+#define CTIME_ERROR 3
+#define LOCALTIME_ERROR 4
 
 extern char *tzname[];
 
@@ -14,31 +17,31 @@ int main()
     struct tm *sp;
     char *Ctime;
 
-    int err = 1;
+    int err;
 
     err = time(&now);
-    if (err == TIME_ERROR){
+    if (err == ERROR){
             perror("Error in function time");
-            exit(1);
+            exit(TIME_ERROR);
     }
 
     err = setenv("TZ", "PST8PDT", 1);
-    if (err == SETENV_MEMORY_ALLOCATE_ERROR){
+    if (err == ERROR){
             perror("Error in function setenv");
-            exit(1);
+            exit(SETENV_MEMORY_ALLOCATE_ERROR);
     }
 
     Ctime = ctime(&now);
     if (!Ctime){
             perror("Error in function ctime");
-            exit(1);
+            exit(CTIME_ERROR);
     }
     printf("%s", Ctime);
 
     sp = localtime(&now);
     if (!sp){
             perror("Error in function localtime");
-            exit(1);
+            exit(LOCALTIME_ERROR);
     }
 
     printf("%02d/%d/%02d %d:%02d:%02d %s\n",
@@ -48,3 +51,4 @@ int main()
 
     return(0);
 }
+~           
