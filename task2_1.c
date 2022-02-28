@@ -3,6 +3,9 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define TIME_ERROR -1
+#define SETENV_MEMORY_ALLOCATE_ERROR -1
+
 extern char *tzname[];
 
 int main()
@@ -10,24 +13,31 @@ int main()
     time_t now;
     struct tm *sp;
     char *Ctime;
-    if (time(&now) == -1){
-            perror("Error");
+
+    int err = 1;
+
+    err = time(&now);
+    if (err == TIME_ERROR){
+            perror("Error in function time");
             exit(1);
     }
 
-    if (setenv("TZ", "PST8PDT", 1) != 0){
-            perror("Error");
+    err = setenv("TZ", "PST8PDT", 1);
+    if (err == SETENV_MEMORY_ALLOCATE_ERROR){
+            perror("Error in function setenv");
             exit(1);
     }
 
-    if ((Ctime = ctime(&now)) == NULL){
-            perror("Error");
+    Ctime = ctime(&now);
+    if (!Ctime){
+            perror("Error in function ctime");
             exit(1);
     }
     printf("%s", Ctime);
 
-    if ((sp = localtime(&now)) == NULL){
-            perror("Error");
+    sp = localtime(&now);
+    if (!sp){
+            perror("Error in function localtime");
             exit(1);
     }
 
