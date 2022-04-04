@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 
 	if (argc == NO_ARGUMENTS){
 		printf("Nothing to do: have no arguments\n");
-		return 0;
+		return SUCCESSFUL_COMPLETION;
 	}
 
 	pid_t pid = fork();
