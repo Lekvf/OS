@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 		
 		if (err == ERROR){
 			perror("error in function exec");
-			return ERROR; // ?
+			return ERROR;
 		}
 	}
 	
