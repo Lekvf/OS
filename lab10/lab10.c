@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if (WIFEXITED(statloc)) {
-		printf("proccess with pid %d finished with %d\n", pid, WEXITSTATUS(statloc));
+		printf("proccess with pid = %d\n finished with status %d\n", pid, WEXITSTATUS(statloc));
 	}
 
 	return 0;
