@@ -13,7 +13,8 @@ void printID(){
 	uid_t uid = getuid();
 	uid_t euid = geteuid();
 	
-	printf("uid == %d, euid == %d\n", uid, euid);
+	printf("\n\nReal user ID == %d\n", uid);
+        printf("Effective user ID == %d\n", euid);
 }
 
 int openFile(){
@@ -28,7 +29,7 @@ int openFile(){
 	int close = fclose(file);
                 
         if (close == EOF) {
-           	perror("Unable to close file");
+           	perror("Unable to close file\n\n");
               	return FCLOSE_ERROR;
         }
         
