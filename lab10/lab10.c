@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		return WAIT_ERROR;
 	}
 	
-	if (WIFEXITED(statloc)) {
+	if (WIFEXITED(statloc) == TRUE) {
 		printf("\nPID of child proccess is %d\n", pid);
 		printf("Finished with %d status\n", WEXITSTATUS(statloc) );
 	}
