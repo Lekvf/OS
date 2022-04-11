@@ -8,6 +8,7 @@
 #define WAIT_ERROR 4
 #define SUCCESSFUL_COMPLETION 0
 #define NO_ARGUMENTS 1
+#define TRUE 1
 #define I_AM_CHILD_PROCCESS 0
 
 int main(int argc, char *argv[]) {
