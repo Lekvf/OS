@@ -34,8 +34,7 @@ int main(int argc, char *argv[]) {
 		return EXEC_ERROR;
 	}
 	int statloc;
-	/*sleep(3);
-	kill(pid, SIGCONT);*/
+   
 	pid = waitpid(pid, &statloc, WUNTRACED | WCONTINUED);
 
 	if (pid == ERROR){
