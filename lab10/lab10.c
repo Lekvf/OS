@@ -33,9 +33,10 @@ int main(int argc, char *argv[]) {
 		perror("Error in function exec");
 		return EXEC_ERROR;
 	}
-	
 	int statloc;
-	pid = wait(&statloc);
+	/*sleep(3);
+	kill(pid, SIGCONT);*/
+	pid = waitpid(pid, &statloc, WUNTRACED | WCONTINUED);
 
 	if (pid == ERROR){
 		perror("Error in function wait");
@@ -70,7 +71,7 @@ void childEndingStatus(int statloc){
 	}
 
 	if (WIFCONTINUED(statloc) == TRUE){
-		printf("STILL WORKED!!!\nKILL IT!!\n");
+		printf("stil worked\n");
 	}
 
 }
