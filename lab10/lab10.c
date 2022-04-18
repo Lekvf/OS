@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <signal.h>
 
 #define ERROR -1
 #define FORK_ERROR 2
@@ -10,6 +11,8 @@
 #define NO_ARGUMENTS 1
 #define TRUE 1
 #define I_AM_CHILD_PROCCESS 0
+
+void childEndingStatus(int statloc);
 
 int main(int argc, char *argv[]) {
 
@@ -24,13 +27,11 @@ int main(int argc, char *argv[]) {
 		perror("Error in function fork");
 		return FORK_ERROR;
 	}
-
+	
 	if (pid == I_AM_CHILD_PROCCESS){
-		int err = execvp(argv[1], &argv[1]);
-		if (err == ERROR){
-			perror("error in function exec");
-			return EXEC_ERROR;
-		}
+		execvp(argv[1], &argv[1]);
+		perror("Error in function exec");
+		return EXEC_ERROR;
 	}
 	
 	int statloc;
@@ -41,10 +42,35 @@ int main(int argc, char *argv[]) {
 		return WAIT_ERROR;
 	}
 	
+	printf("\nChild proccess with PID %d ", pid);
+	
+	childEndingStatus(statloc);
+	
+	return 0;
+}
+
+
+void childEndingStatus(int statloc){
+	int signal;
 	if (WIFEXITED(statloc) == TRUE) {
-		printf("\nPID of child proccess is %d\n", pid);
-		printf("Finished with %d status\n", WEXITSTATUS(statloc) );
+		signal = WEXITSTATUS(statloc);
+		printf("exited with %d status\n", signal);
 	}
 
-	return 0;
+	if (WIFSIGNALED(statloc) == TRUE){
+		signal = WTERMSIG(statloc);
+		printf("killed by signal %d\n", signal);
+		psignal(signal, "reason");
+	}
+
+	if (WIFSTOPPED(statloc) == TRUE){
+		signal = WSTOPSIG(statloc);
+		printf("stopped by signal %d\n", signal);
+		psignal(signal, "reason");
+	}
+
+	if (WIFCONTINUED(statloc) == TRUE){
+		printf("STILL WORKED!!!\nKILL IT!!\n");
+	}
+
 }
