@@ -12,7 +12,7 @@
 #define TRUE 1
 #define I_AM_CHILD_PROCCESS 0
 
-void childEndingStatus(int statloc);
+void childEndingStatus(pid_t pid, int statloc);
 
 int main(int argc, char *argv[]) {
 
@@ -45,13 +45,13 @@ int main(int argc, char *argv[]) {
 	
 	printf("\nChild proccess with PID %d ", pid);
 	
-	childEndingStatus(statloc);
+	childEndingStatus(pid, statloc);
 	
 	return 0;
 }
 
 
-void childEndingStatus(int statloc){
+void childEndingStatus(pid_t pid, int statloc){
 	int signal;
 	if (WIFEXITED(statloc) == TRUE) {
 		signal = WEXITSTATUS(statloc);
