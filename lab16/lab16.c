@@ -6,7 +6,7 @@
 
 #define BUFFSIZE 2
 #define ERROR -1
-#define NOTTERMINAL 0
+#define NOT_TERMINAL 0
 #define SUCCESS 0
 
 void clearBuf();
@@ -17,7 +17,7 @@ int main(){
         char answer;
 
         int err = isatty(STDIN_FILENO);
-        if (err == NOTTERMINAL){
+        if (err == NOT_TERMINAL){
                 perror("stdin error");
                 exit(1);
         }
