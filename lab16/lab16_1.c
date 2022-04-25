@@ -56,7 +56,7 @@ void clearBuf(){
 int getattr(struct termios *termAttr){
         int err = tcgetattr(STDIN_FILENO, termAttr);
         if (err == ERROR){
-                perror("error in tcgetattr1");
+                perror("error in tcgetattr");
                 return ERROR;
         }
         return SUCCESS;
