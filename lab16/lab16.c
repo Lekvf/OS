@@ -42,7 +42,7 @@ int main(){
 
 	printf("Your answer is %c\n", answer); 
 	
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
+	//tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
 	return 0;
 }
 
