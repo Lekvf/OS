@@ -19,20 +19,20 @@ int setattr(struct termios *termAttr);
 
 int main(){
         char answer;
-        struct termios term, savedAttributes;
+        //struct termios term, savedAttributes;
         int err = isatty(STDIN_FILENO);
         if (err == NOTTERMINAL){
                 perror("stdin error");
                 exit(1);
         }
-        err = getattr(&savedAttributes);
+        /*err = getattr(&savedAttributes);
         if (err == ERROR)
                 exit(1);
 
         err = changeTerm(&term, &savedAttributes);
         if (err != SUCCESS){
                 exit(1);
-        }
+        }*/
         printf("I have a question. Your answer should have a single character\nYour answer?\n\n");
         err = readAnswer(&answer);
         if (err == ERROR)
@@ -40,7 +40,7 @@ int main(){
 
         printf("Your answer is %c\n", answer);
 
-        tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
+        //tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
         return 0;
 }
 
