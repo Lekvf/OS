@@ -19,20 +19,20 @@ int setattr(struct termios *termAttr);
 
 int main(){
         char answer;
-        //struct termios term, savedAttributes;
+        struct termios term, savedAttributes;
         int err = isatty(STDIN_FILENO);
         if (err == NOTTERMINAL){
                 perror("stdin error");
                 exit(1);
         }
-        /*err = getattr(&savedAttributes);
+        err = getattr(&savedAttributes);
         if (err == ERROR)
                 exit(1);
 
         err = changeTerm(&term, &savedAttributes);
         if (err != SUCCESS){
                 exit(1);
-        }*/
+        }
         printf("I have a question. Your answer should have a single character\nYour answer?\n\n");
         err = readAnswer(&answer);
         if (err == ERROR)
@@ -40,7 +40,7 @@ int main(){
 
         printf("Your answer is %c\n", answer);
 
-        //tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
+        tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
         return 0;
 }
 
@@ -63,7 +63,7 @@ int getattr(struct termios *termAttr){
 }
 
 int setattr(struct termios *termAttr){
-        int err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала немедленно
+        int err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала
         if (err == ERROR){
                 perror("error in tcsetattr");
                 return ERROR;
@@ -103,7 +103,7 @@ int readAnswer(char *answer){
                 return ERROR;
         }
 
-        if (length != 1 && answer[BUFFSIZE-1] != '\n' || answer[0] == '\n'){
+        if (length != 1 && answer[BUFFSIZE-1] != '\n'){// || answer[0] == '\n'){
                 length = wrongAnswer(answer);
         }
         if (length == ERROR)
@@ -122,6 +122,6 @@ int wrongAnswer(char *c){
                         return ERROR;
                 }
         }
-        while (length != 1 && c[BUFFSIZE-1] != '\n' || c[0] == '\n');
+        while (length != 1 && c[BUFFSIZE-1] != '\n');// || c[0] == '\n');
 }
 
