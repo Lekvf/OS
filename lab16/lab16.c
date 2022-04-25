@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include<unistd.h>
-#include<limits.h>
 #include <string.h>
 #include<termios.h>
 #include<stdlib.h>
@@ -16,7 +15,6 @@ int readAnswer(char *answer);
 
 int main(){
         char answer;
-        struct termios term, savedAttributes;
 
         int err = isatty(STDIN_FILENO);
         if (err == NOTTERMINAL){
@@ -51,7 +49,7 @@ int readAnswer(char *answer){
                 return ERROR;
         }
 
-        if (length != 1 && answer[BUFFSIZE-1] != '\n' || answer[0] == '\n'){
+        if (length != 1 && answer[BUFFSIZE-1] != '\n'){// || answer[0] == '\n'){
                 length = wrongAnswer(answer);
         }
         if (length == ERROR)
@@ -70,6 +68,6 @@ int wrongAnswer(char *c){
                         return ERROR;
                 }
         }
-        while (length != 1 && c[BUFFSIZE-1] != '\n' || c[0] == '\n');
+        while (length != 1 && c[BUFFSIZE-1] != '\n');// || c[0] == '\n');
 }
      
