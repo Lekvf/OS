@@ -113,7 +113,7 @@ int readAnswer(char *answer){
 int wrongAnswer(char *c){
         int length;
         do{
-                clearBuf();
+                //clearBuf();
                 printf("Length of your answer is not one\n");
                 printf("Your answer should have a single character.\nPlease, repeat your answer\n\n");
                 length = read(STDIN_FILENO, c, BUFFSIZE);
