@@ -22,7 +22,7 @@ int main(){
                 exit(1);
         }
 
-        printf("I have a question. Your answer should have a single character\nYour answer?\n\n");
+        printf("I have a question. Your answer should have a single character.\nYour answer?\n\n");
 
         err = readAnswer(&answer);
         if (err == ERROR)
@@ -61,7 +61,7 @@ int wrongAnswer(char *c){
         do{
                 clearBuf();
                 printf("Length of your answer is not one\n");
-                printf("Your answer should have a single character.\nRepeat your answer, please\n\n");
+                printf("Your answer should have a single character.\nPlease, repeat your answer\n\n");
                 length = read(STDIN_FILENO, c, BUFFSIZE);
                 if (length == ERROR){
                         perror("error in read");
