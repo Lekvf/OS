@@ -43,7 +43,7 @@ void clearBuf(){
 }
 
 int readAnswer(char *answer){
-        int length = read(STDIN_FILENO, answer, BUFFSIZE);
+        ssize_t length = read(STDIN_FILENO, answer, BUFFSIZE);
         if (length == ERROR){
                 perror("error in read");
                 return ERROR;
@@ -57,7 +57,7 @@ int readAnswer(char *answer){
 }
 
 int wrongAnswer(char *c){
-        int length;
+        ssize_t length;
         do{
                 clearBuf();
                 printf("Length of your answer is not one\n");
