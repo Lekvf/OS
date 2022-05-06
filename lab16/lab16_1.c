@@ -22,7 +22,7 @@ int main(){
         struct termios term, savedAttributes;
         int err = isatty(STDIN_FILENO);
         if (err == NOT_TERMINAL){
-                perror("stdin error");
+                perror("stdin is not terminal");
                 exit(1);
         }
         err = getattr(&savedAttributes);
