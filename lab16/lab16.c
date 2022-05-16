@@ -19,14 +19,14 @@ int main(){
         int err = isatty(STDIN_FILENO);
         if (err == NOT_TERMINAL){
                 perror("stdin error");
-                exit(1);
+                return ERROR;
         }
 
         printf("I have a question. Your answer should have a single character.\nYour answer?\n\n");
 
         err = readAnswer(&answer);
         if (err == ERROR)
-                return err;
+                return ERROR;
 
         printf("Your answer is %c\n", answer);
 
