@@ -132,6 +132,10 @@ int editor(){
 			transfer(&pos, line);
 		}
 		length = read(STDIN_FILENO, &c, 1);
+		if (length == ERROR){
+			perror("error in read");
+			return ERROR;
+		}
         }
         return SUCCESS;
 }
