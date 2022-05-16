@@ -8,13 +8,16 @@
 #define ERROR -1
 #define NOT_TERMINAL 0
 #define SUCCESS 0
+#define NOW 1
+#define DRAIN 2
+#define FLUSH 3
 
 void clearBuf();
 int wrongAnswer(char *c);
 int changeTerm(struct termios *term, struct termios *savedAttributes);
 int readAnswer(char *answer);
 int getattr(struct termios *termAttr);
-int setattr(struct termios *termAttr);
+int setattr(struct termios *termAttr, int flag);
 
 int main(){
         char answer;
@@ -68,8 +71,27 @@ int getattr(struct termios *termAttr){
         return SUCCESS;
 }
 
-int setattr(struct termios *termAttr){
-        int err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала немедленно
+int setattr(struct termios *termAttr, int flag){
+        int err;
+        switch(flag){
+                case NOW: {
+                        err = tcsetattr(STDIN_FILENO, TCSANOW, termAttr); //устанавливаем новый режим работы терминала немедленно
+                        break;
+                }
+                case DRAIN: {
+                        err = tcsetattr(STDIN_FILENO, TCSADRAIN, termAttr); //устанавливаем новый режим работы терминала немедленно
+                        break;
+                }
+                case FLUSH: {
+                        err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала немедленно
+                        break;
+                }
+                default: {
+                        perror("error flag for tcsetattr");
+                        err = ERROR:
+                        break;
+                }
+        }
         if (err == ERROR){
                 perror("error in tcsetattr");
                 return ERROR;
