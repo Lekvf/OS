@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include<unistd.h>
-#include<limits.h>
 #include <string.h>
 #include<termios.h>
 #include<stdlib.h>
@@ -23,26 +22,33 @@ int main(){
         int err = isatty(STDIN_FILENO);
         if (err == NOT_TERMINAL){
                 perror("stdin is not terminal");
-                exit(1);
+                return ERROR;
         }
         err = getattr(&savedAttributes);
         if (err == ERROR)
-                exit(1);
+                return ERROR;
 
         err = changeTerm(&term, &savedAttributes);
         if (err != SUCCESS){
-                exit(1);
+                setattr(&savedAttributes);
+                return ERROR;
         }
-        printf("I have a question. Your answer should have a single character.\nYour answer?\n\n");
+        printf("I have a question. Your answer should have a single character\nYour answer?\n\n");
         err = readAnswer(&answer);
-        if (err == ERROR)
-                return err;
+        if (err == ERROR){
+                setattr(&savedAttributes);
+                return ERROR;
+        }
 
         printf("Your answer is %c\n", answer);
 
-        tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
+        err = setattr(&savedAttributes);//tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
+        if (err == ERROR){ 
+                return ERROR;
+        }
         return 0;
 }
+
 
 void clearBuf(){
         char c;
@@ -56,14 +62,14 @@ void clearBuf(){
 int getattr(struct termios *termAttr){
         int err = tcgetattr(STDIN_FILENO, termAttr);
         if (err == ERROR){
-                perror("error in tcgetattr");
+                perror("error in tcgetattr1");
                 return ERROR;
         }
         return SUCCESS;
 }
 
 int setattr(struct termios *termAttr){
-        int err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала
+        int err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала немедленно
         if (err == ERROR){
                 perror("error in tcsetattr");
                 return ERROR;
@@ -92,7 +98,7 @@ int changeTerm(struct termios *term, struct termios *savedAttributes){
         if ((*term).c_lflag != bufTerm.c_lflag || (*term).c_cc[VMIN] != bufTerm.c_cc[VMIN]){
                 printf("Not all changes have been performed successfully");
                 return ERROR;
-	}
+        }
         return SUCCESS;
 }
 
@@ -104,7 +110,7 @@ int readAnswer(char *answer){
         }
 
         if (length != 1 && answer[BUFFSIZE-1] != '\n'){// || answer[0] == '\n'){
-                length = wrongAnswer(answer);
+        ^Z      length = wrongAnswer(answer);
         }
         if (length == ERROR)
                 return ERROR;
@@ -115,7 +121,7 @@ int wrongAnswer(char *c){
         do{
                 //clearBuf();
                 printf("Length of your answer is not one\n");
-                printf("Your answer should have a single character.\nPlease, repeat your answer\n\n");
+                printf("Your answer should have a single character.\nRepeat your answer, please\n\n");
                 length = read(STDIN_FILENO, c, BUFFSIZE);
                 if (length == ERROR){
                         perror("error in read");
@@ -124,4 +130,3 @@ int wrongAnswer(char *c){
         }
         while (length != 1 && c[BUFFSIZE-1] != '\n');// || c[0] == '\n');
 }
-
