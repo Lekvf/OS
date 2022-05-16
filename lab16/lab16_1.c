@@ -107,7 +107,7 @@ int changeTerm(struct termios *term, struct termios *savedAttributes){
         *term = *savedAttributes;
 	
         (*term).c_lflag &= ~( ICANON | ECHO ); //отключаем канонический режим и эхо
-        (*term).c_cc[VMIN] = sizeof(char);
+        (*term).c_cc[VMIN] = 1;
 
         err = setattr(term, FLUSH);
         if (err == ERROR)
