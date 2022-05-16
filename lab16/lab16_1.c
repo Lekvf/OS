@@ -33,19 +33,19 @@ int main(){
 
         err = changeTerm(&term, &savedAttributes);
         if (err != SUCCESS){
-                setattr(&savedAttributes);
+                setattr(&savedAttributes, NOW);
                 return ERROR;
         }
         printf("I have a question. Your answer should have a single character\nYour answer?\n\n");
         err = readAnswer(&answer);
         if (err == ERROR){
-                setattr(&savedAttributes);
+                setattr(&savedAttributes, NOW);
                 return ERROR;
         }
 
         printf("Your answer is %c\n", answer);
 
-        err = setattr(&savedAttributes);//tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
+        err = setattr(&savedAttributes, NOW);//tcsetattr(STDIN_FILENO, TCSAFLUSH, &savedAttributes); //возвращаем прежний режим работы стандартного ввода терминала
         if (err == ERROR){ 
                 return ERROR;
         }
@@ -75,20 +75,20 @@ int setattr(struct termios *termAttr, int flag){
         int err;
         switch(flag){
                 case NOW: {
-                        err = tcsetattr(STDIN_FILENO, TCSANOW, termAttr); //устанавливаем новый режим работы терминала немедленно
+                        err = tcsetattr(STDIN_FILENO, TCSANOW, termAttr); 
                         break;
                 }
                 case DRAIN: {
-                        err = tcsetattr(STDIN_FILENO, TCSADRAIN, termAttr); //устанавливаем новый режим работы терминала немедленно
+                        err = tcsetattr(STDIN_FILENO, TCSADRAIN, termAttr); 
                         break;
                 }
                 case FLUSH: {
-                        err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr); //устанавливаем новый режим работы терминала немедленно
+                        err = tcsetattr(STDIN_FILENO, TCSAFLUSH, termAttr);
                         break;
                 }
                 default: {
                         perror("error flag for tcsetattr");
-                        err = ERROR:
+                        err = ERROR;
                         break;
                 }
         }
@@ -105,11 +105,12 @@ int changeTerm(struct termios *term, struct termios *savedAttributes){
         struct termios bufTerm;
 
         *term = *savedAttributes;
-
+	
         (*term).c_lflag &= ~( ICANON | ECHO ); //отключаем канонический режим и эхо
         (*term).c_cc[VMIN] = sizeof(char);
+        (*term).c_cc[VTIME] = 1;
 
-        err = setattr(term);
+        err = setattr(term, NOW);
         if (err == ERROR)
                 return ERROR;
 
@@ -117,10 +118,10 @@ int changeTerm(struct termios *term, struct termios *savedAttributes){
         if (err == ERROR)
                 return ERROR;
 
-        if ((*term).c_lflag != bufTerm.c_lflag || (*term).c_cc[VMIN] != bufTerm.c_cc[VMIN]){
+        if ((*term).c_lflag != bufTerm.c_lflag || (*term).c_cc[VMIN] != bufTerm.c_cc[VMIN] || (*term).c_cc[VTIME] != bufTerm.c_cc[VTIME]){
                 printf("Not all changes have been performed successfully");
                 return ERROR;
-        }
+	}
         return SUCCESS;
 }
 
