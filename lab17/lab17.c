@@ -24,7 +24,7 @@ int ctrlD(int pos);
 int ctrlG();
 int editor();
 int checkCtrlSym(char c, int *pos, char line[]);
-int transfer(int *pos, char line[]);
+int wordWrap(int *pos, char line[]);
 int checkWrite(int err, int needNum);
 
 int changeTerm(struct termios *term, struct termios *savedAttributes);
@@ -129,7 +129,7 @@ int editor(){
         		pos++;
 		}
 		if (pos >= LINESIZE){
-			transfer(&pos, line);
+			wordWrap(&pos, line);
 		}
 		length = read(STDIN_FILENO, &c, 1);
 		if (length == ERROR){
@@ -140,7 +140,7 @@ int editor(){
         return SUCCESS;
 }
 
-int transfer(int *pos, char line[]){
+int wordWrap(int *pos, char line[]){
 	int savpos, newpos, err;
 	savpos = (*pos);
 	while (*pos > 0 && !isspace(line[(*pos) - 1])){
