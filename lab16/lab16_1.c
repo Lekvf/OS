@@ -108,9 +108,8 @@ int changeTerm(struct termios *term, struct termios *savedAttributes){
 	
         (*term).c_lflag &= ~( ICANON | ECHO ); //отключаем канонический режим и эхо
         (*term).c_cc[VMIN] = sizeof(char);
-        (*term).c_cc[VTIME] = 1;
 
-        err = setattr(term, NOW);
+        err = setattr(term, FLUSH);
         if (err == ERROR)
                 return ERROR;
 
@@ -118,7 +117,7 @@ int changeTerm(struct termios *term, struct termios *savedAttributes){
         if (err == ERROR)
                 return ERROR;
 
-        if ((*term).c_lflag != bufTerm.c_lflag || (*term).c_cc[VMIN] != bufTerm.c_cc[VMIN] || (*term).c_cc[VTIME] != bufTerm.c_cc[VTIME]){
+        if ((*term).c_lflag != bufTerm.c_lflag || (*term).c_cc[VMIN] != bufTerm.c_cc[VMIN]){
                 printf("Not all changes have been performed successfully");
                 return ERROR;
 	}
