@@ -133,7 +133,7 @@ int readAnswer(char *answer){
         }
 
         if (length != 1 && answer[BUFFSIZE-1] != '\n'){// || answer[0] == '\n'){
-        ^Z      length = wrongAnswer(answer);
+                length = wrongAnswer(answer);
         }
         if (length == ERROR)
                 return ERROR;
