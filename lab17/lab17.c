@@ -177,7 +177,7 @@ int checkWrite(int err, int needNum){
 		return ERROR;
 	}
 	if (err != needNum){
-		perror("not enough characters printed");
+		printf("not enough characters printed");
 		return ERROR;
 	}	
 	return SUCCESS;
@@ -187,7 +187,7 @@ int erase(){
 	int err = write(STDOUT_FILENO, "\b \b", 3);
 	err = checkWrite(err, 3);
 	if (err != SUCCESS){
-		perror("can't do Backspace");
+		printf("can't do Backspace\n");
 		return ERROR;
 	}
 	return SUCCESS;
@@ -198,7 +198,7 @@ int ctrlU(int *pos){
 	while (*pos > 0){
 		err = erase();
 		if (err != 0){
-			perror("can't do Ctrl+U");
+			printf("can't do Ctrl+U\n");
 			return ERROR;
 		}
 		(*pos)--;
@@ -211,7 +211,7 @@ int ctrlW(int *pos, char line[]){
 	while (*pos > 0 && isspace(line[(*pos) - 1])){
 		err = erase();
 		if (err != 0){
-			perror("can't do Ctrl+W");
+			printf("can't do Ctrl+W\n");
 			return ERROR;
 		}
 		(*pos)--;
@@ -219,7 +219,7 @@ int ctrlW(int *pos, char line[]){
 	while (*pos > 0 && !isspace(line[(*pos) - 1])){
 		err = erase();
 		if (err != 0){
-			perror("can't do Ctrl+W");
+			printf("can't do Ctrl+W\n");
 			return ERROR;
 		}
 		(*pos)--;
@@ -238,7 +238,7 @@ int ctrlG(){
 	int err = write(STDOUT_FILENO, BEL, 1);
 	err = checkWrite(err, 1);
 	if (err != SUCCESS){
-		perror("cannot do BEL");
+		printf("cannot do BEL\n");
 		return ERROR;
 	}
 	return SUCCESS;
