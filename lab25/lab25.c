@@ -99,7 +99,7 @@ void closeBothfd(int *fd){
 	if (err == ERROR){
 		perror("close error");
 	}
-	int err = close(fd[FOR_WRITE]);
+	err = close(fd[FOR_WRITE]);
 	if (err == ERROR){
 		perror("close error");
 	}
