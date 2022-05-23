@@ -30,7 +30,7 @@ int pipeReader(int *fd){
 	
 	err = close(fd[FOR_READ]);
 	if (err == ERROR){
-		perror("close error1");
+		perror("close error");
 		return ERROR;
 	}
 	
@@ -56,7 +56,7 @@ int pipeWriter(int *fd){
 	
 	err = close(fd[FOR_WRITE]);
 	if (err == ERROR){
-		perror("close error3");
+		perror("close error");
 		return ERROR;
 	}
 	
@@ -68,7 +68,7 @@ int readerChild(int *fd){
 	
 	err = close(fd[FOR_WRITE]);
 	if (err == ERROR){
-		perror("close error0");
+		perror("close error");
 		return ERROR;
 	}	
 	err = pipeReader(fd);
@@ -84,7 +84,7 @@ int writerChild(int *fd){
 	
 	err = close(fd[FOR_READ]);
 	if (err == ERROR){
-		perror("close error2");
+		perror("close error");
 		return ERROR;
 	}
 	err = pipeWriter(fd);
