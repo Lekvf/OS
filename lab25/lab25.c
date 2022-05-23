@@ -94,6 +94,16 @@ int writerChild(int *fd){
 	return SUCCESS;
 }
 
+void closeBothfd(int *fd){
+	int err = close(fd[FOR_READ]);
+	if (err == ERROR){
+		perror("close error");
+	}
+	int err = close(fd[FOR_WRITE]);
+	if (err == ERROR){
+		perror("close error");
+	}
+}
 
 int main(){
 	int fd[2];
@@ -107,6 +117,7 @@ int main(){
 	pid_t pid = fork();
 	if (pid == ERROR){
 		perror("fork error");
+		closeBothfd(fd);
 		return ERROR;
 	}
 	if (pid == CHILD_PROCCESS){
@@ -119,6 +130,7 @@ int main(){
 	pid = fork();
 	if (pid == ERROR){
 		perror("fork error");
+		closeBothfd(fd);
 		return ERROR;
 	}
 	
