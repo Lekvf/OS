@@ -10,61 +10,6 @@
 #define FOR_READ 0
 #define FOR_WRITE 1
 
-int closeFD(int fd);
-int closeBothFD(int *fd);
-int readFromPipe(int *fd);
-int writeInPipe(int *fd);
-int reader(int *fd);
-int writer(int *fd);
-
-int main(){
-	int fd[2];
-	int err;
-	err = pipe(fd);
-	if (err == ERROR){
-		perror("pipe error");
-		return ERROR;
-	}
-	
-	pid_t pid = fork();
-	if (pid == ERROR){
-		perror("fork error");
-		return ERROR;
-	}
-	if (pid == CHILD_PROCCESS){
-		err = writer(fd);
-		if (err == ERROR)
-			return ERROR;
-		return SUCCESS;
-	}
-	
-	pid = fork();
-	if (pid == ERROR){
-		perror("fork error");
-		return ERROR;
-	}
-	if (pid == CHILD_PROCCESS){
-		err = reader(fd);
-		if (err == ERROR)
-			return ERROR;
-		return SUCCESS;
-	}
-	
-	err = closeBothFD(fd);
-	if (err == ERROR) return ERROR;
-	int stat;
-	int childNum = 0;
-	while ((pid = wait(&stat)) > 0) {
-		childNum++;
-	}
-	if (childNum != 2){
-		perror("wait error");
-		return ERROR;
-	}
-
-	return 0;
-}
-
 int closeFD(int fd){
 	int err = close(fd);
 	if (err == ERROR){
@@ -75,14 +20,12 @@ int closeFD(int fd){
 }
 
 int closeBothFD(int *fd){
-	int err = close (fd[FOR_READ]);
+	int err = closeFD(fd[FOR_READ]);
 	if (err == ERROR){
-		perror("close error");
 		return ERROR;
 	}
-	err = close(fd[FOR_WRITE]);
+	err = closeFD(fd[FOR_WRITE]);
 	if (err == ERROR){
-		perror("close error");
 		return ERROR;
 	}
 	
@@ -99,6 +42,7 @@ int readFromPipe(int *fd){
 			return ERROR;
 		}
 		if (length == 0) break;
+		
 		c = toupper(c);
 
 		err = write(STDOUT_FILENO, &c, 1);
@@ -107,6 +51,7 @@ int readFromPipe(int *fd){
 			return ERROR;
 		}
 	} while (length > 0);
+	
 	return SUCCESS;
 }
 
@@ -130,7 +75,7 @@ int writeInPipe(int *fd){
 	return SUCCESS;
 }
 
-int reader(int *fd){
+int readerProc(int *fd){
 	int err;
 	
 	err = closeFD(fd[FOR_WRITE]);
@@ -149,7 +94,7 @@ int reader(int *fd){
 	return SUCCESS;
 }
 
-int writer(int *fd){
+int writerProc(int *fd){
 	int err;
 	
 	err = closeFD(fd[FOR_READ]);
@@ -166,5 +111,60 @@ int writer(int *fd){
 	if (err == ERROR){
 		return ERROR;
 	}
+	
 	return SUCCESS;
+}
+
+int createChildProc(int *fd){
+	pid_t pid = fork();
+	if (pid == ERROR){
+		closeBothFD(fd);
+		perror("fork error");
+		return ERROR;
+	}
+	return pid;
+}
+
+int main(){
+	int fd[2];
+	int err;
+	err = pipe(fd);
+	if (err == ERROR){
+		perror("pipe error");
+		return ERROR;
+	}
+	
+	pid_t pid = createChildProc(fd);
+	if (pid == ERROR) return ERROR;
+	
+	if (pid == CHILD_PROCCESS){
+		err = writerProc(fd);
+		if (err == ERROR)
+			return ERROR;
+		return SUCCESS;
+	}
+	
+	pid = createChildProc(fd);
+	if (pid == ERROR) return ERROR;
+	
+	if (pid == CHILD_PROCCESS){
+		err = readerProc(fd);
+		if (err == ERROR)
+			return ERROR;
+		return SUCCESS;
+	}
+	
+	err = closeBothFD(fd);
+	if (err == ERROR) return ERROR;
+	int stat;
+	int childNum = 0;
+	while ((pid = wait(&stat)) > 0) {
+		childNum++;
+	}
+	if (childNum != 2){
+		perror("wait error");
+		return ERROR;
+	}
+
+	return 0;
 }
