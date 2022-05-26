@@ -158,7 +158,7 @@ int main(){
 	if (err == ERROR) return ERROR;
 	int stat;
 	int childNum = 0;
-	while ((pid = wait(&stat)) > 0) {
+	while (wait(&stat) > 0) {
 		childNum++;
 	}
 	if (childNum != 2){
