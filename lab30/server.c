@@ -69,7 +69,6 @@ int connectWithClient(int socketFD, struct sockaddr_un *addr){
 int main(int argc, char *argv[]) {
 
 	char *socket_path = "socket";
-	unlink(socket_path);
 
 	struct sockaddr_un addr;
 	memset(&addr, 0, sizeof(addr));
